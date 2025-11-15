@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Item {
@@ -16,6 +23,10 @@ export class Item {
 
   @Column({ default: false })
   consumed: boolean;
+
+  @ManyToOne(() => User, (user) => user.items)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   constructor(item?: Partial<Item>) {
     Object.assign(this, item);
