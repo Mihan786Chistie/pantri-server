@@ -25,6 +25,9 @@ export class User {
   password: string;
 
   @Column({ nullable: true })
+  hashedRefreshToken: string;
+
+  @Column({ nullable: true })
   avatarUrl?: string;
 
   @CreateDateColumn()

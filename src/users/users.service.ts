@@ -25,6 +25,13 @@ export class UsersService {
     return user;
   }
 
+  async updateHashedRefreshToken(userId: number, hashedRefreshToken: any) {
+    return await this.userRepository.update(
+      { id: userId },
+      { hashedRefreshToken },
+    );
+  }
+
   findAll() {
     return `This action returns all users`;
   }
@@ -34,7 +41,7 @@ export class UsersService {
       where: {
         id,
       },
-      select: ['name', 'email', 'avatarUrl'],
+      select: ['name', 'avatarUrl', 'hashedRefreshToken'],
     });
   }
 
