@@ -15,6 +15,16 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({
+      where: {
+        email,
+      },
+    });
+
+    return user;
+  }
+
   findAll() {
     return `This action returns all users`;
   }
