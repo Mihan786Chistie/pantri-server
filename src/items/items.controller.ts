@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Req,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -17,30 +18,31 @@ export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 
   @Post()
-  async create(@Body() createItemDto: CreateItemDto) {
-    return this.itemsService.create(createItemDto);
+  async create(@Req() req, @Body() createItemDto: CreateItemDto) {
+    return this.itemsService.create(req.user.id, createItemDto);
   }
 
   @Get()
-  async findAll() {
-    return this.itemsService.findAll();
+  async findAll(@Req() req) {
+    return this.itemsService.findAll(req.user.id);
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.itemsService.findOne(id);
+  async findOne(@Req() req, @Param('id', ParseIntPipe) id: number) {
+    return this.itemsService.findOne(req.user.id, id);
   }
 
   @Patch(':id')
   async update(
+    @Req() req,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateItemDto: UpdateItemDto,
   ) {
-    return this.itemsService.update(id, updateItemDto);
+    return this.itemsService.update(req.user.id, id, updateItemDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    return this.itemsService.remove(id);
+  async remove(@Req() req, @Param('id', ParseIntPipe) id: number) {
+    return this.itemsService.remove(req.user.id, id);
   }
 }

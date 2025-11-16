@@ -12,33 +12,68 @@ export class ItemsService {
     private readonly itemsRepository: Repository<Item>,
   ) {}
 
-  async create(createItemDto: CreateItemDto) {
+  async create(userId: number, createItemDto: CreateItemDto) {
     const item = new Item(createItemDto);
-    return await this.itemsRepository.save(item);
+    return await this.itemsRepository.save({
+      ...createItemDto,
+      user: {
+        id: userId,
+      },
+    });
   }
 
-  async findAll() {
-    const items = await this.itemsRepository.find();
+  async findAll(userId: number) {
+    const items = await this.itemsRepository.find({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+    });
     return items;
   }
 
-  async findOne(id: number) {
-    const item = await this.itemsRepository.findOneBy({ id });
+  async findOne(userId: number, id: number) {
+    const item = await this.itemsRepository.findOne({
+      where: {
+        id,
+        user: {
+          id: userId,
+        },
+      },
+    });
     if (!item) throw new NotFoundException(`Item ${id} not found`);
     return item;
   }
 
-  async update(id: number, updateItemDto: UpdateItemDto) {
-    const item = await this.itemsRepository.findOneBy({ id });
+  async update(userId: number, id: number, updateItemDto: UpdateItemDto) {
+    const item = await this.itemsRepository.findOne({
+      where: {
+        id,
+        user: {
+          id: userId,
+        },
+      },
+    });
     if (!item) throw new NotFoundException(`Item ${id} not found`);
     item.consumed = updateItemDto.consumed;
     return await this.itemsRepository.save(item);
   }
 
-  async remove(id: number) {
-    const result = await this.itemsRepository.delete(id);
+  async remove(userId: number, id: number) {
+    const item = await this.itemsRepository.findOne({
+      where: {
+        id,
+        user: {
+          id: userId,
+        },
+      },
+    });
+    if (!item) throw new NotFoundException(`Item ${id} not found`);
+
+    const result = await this.itemsRepository.delete(item.id);
     if (result.affected === 0)
-      throw new NotFoundException(`Item ${id} not found`);
+      throw new NotFoundException(`Item ${item.id} not found`);
     return { deleted: true };
   }
 }
