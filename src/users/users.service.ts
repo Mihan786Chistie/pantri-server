@@ -15,12 +15,34 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({
+      where: {
+        email,
+      },
+    });
+
+    return user;
+  }
+
+  async updateHashedRefreshToken(userId: number, hashedRefreshToken: any) {
+    return await this.userRepository.update(
+      { id: userId },
+      { hashedRefreshToken },
+    );
+  }
+
   findAll() {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    return await this.userRepository.findOne({
+      where: {
+        id,
+      },
+      select: ['name', 'avatarUrl', 'hashedRefreshToken'],
+    });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
