@@ -13,10 +13,16 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
+import { CreateMealTimeDto } from './dto/create-mealtime.dto';
+import { MealTimeService } from './mealtime.service';
+import { UpdateMealTimeDto } from './dto/update-mealtime.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly mealTimeService: MealTimeService,
+  ) {}
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
@@ -29,13 +35,30 @@ export class UsersController {
     return this.usersService.findOne(req.user.id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @Post('mealTime')
+  async createMealtime(
+    @Req() req,
+    @Body() createMealTimeDto: CreateMealTimeDto,
+  ) {
+    return await this.mealTimeService.createMealTime(
+      req.user.id,
+      createMealTimeDto,
+    );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Get('mealTime')
+  async getMealTime(@Req() req) {
+    return await this.mealTimeService.getMealTime(req.user.id);
+  }
+
+  @Patch('mealTime')
+  async updateMealTime(
+    @Req() req,
+    @Body() updateMealTimeDto: UpdateMealTimeDto,
+  ) {
+    return await this.mealTimeService.updateMealTime(
+      req.user.id,
+      updateMealTimeDto,
+    );
   }
 }
