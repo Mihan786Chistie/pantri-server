@@ -25,7 +25,7 @@ export class MealTimeService {
     return await this.mealTimeRepository.save(mealTime);
   }
 
-  async getMealTime(userId: number) {
+  async getMealTime(userId: string) {
     return await this.mealTimeRepository.findOne({
       where: {
         user: {
@@ -35,7 +35,7 @@ export class MealTimeService {
     });
   }
 
-  async updateMealTime(userId: number, updateMealTimeDto: UpdateMealTimeDto) {
+  async updateMealTime(userId: string, updateMealTimeDto: UpdateMealTimeDto) {
     const mealTime = await this.getMealTime(userId);
 
     if (!mealTime) throw new NotFoundException(`MealTime not found`);
@@ -43,7 +43,7 @@ export class MealTimeService {
     return await this.mealTimeRepository.save(mealTime);
   }
 
-  async timezone(userId: number, updateTimezoneDto: UpdateTimeZoneDto) {
+  async timezone(userId: string, updateTimezoneDto: UpdateTimeZoneDto) {
     const mealTime = await this.getMealTime(userId);
     if (!mealTime) {
       throw new NotFoundException(`MealTime not found`);

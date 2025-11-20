@@ -24,7 +24,7 @@ export class UsersService {
     return user;
   }
 
-  async updateHashedRefreshToken(userId: number, hashedRefreshToken: any) {
+  async updateHashedRefreshToken(userId: string, hashedRefreshToken: any) {
     return await this.userRepository.update(
       { id: userId },
       { hashedRefreshToken },
@@ -35,7 +35,7 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return await this.userRepository.findOne({
       where: {
         id,
