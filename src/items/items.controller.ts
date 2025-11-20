@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
   Req,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
@@ -28,21 +27,21 @@ export class ItemsController {
   }
 
   @Get(':id')
-  async findOne(@Req() req, @Param('id', ParseIntPipe) id: number) {
+  async findOne(@Req() req, @Param('id') id: string) {
     return this.itemsService.findOne(req.user.id, id);
   }
 
   @Patch(':id')
   async update(
     @Req() req,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateItemDto: UpdateItemDto,
   ) {
     return this.itemsService.update(req.user.id, id, updateItemDto);
   }
 
   @Delete(':id')
-  async remove(@Req() req, @Param('id', ParseIntPipe) id: number) {
+  async remove(@Req() req, @Param('id') id: string) {
     return this.itemsService.remove(req.user.id, id);
   }
 }

@@ -33,7 +33,7 @@ export class ItemsService {
     return items;
   }
 
-  async findOne(userId: number, id: number) {
+  async findOne(userId: number, id: string) {
     const item = await this.itemsRepository.findOne({
       where: {
         id,
@@ -46,7 +46,7 @@ export class ItemsService {
     return item;
   }
 
-  async update(userId: number, id: number, updateItemDto: UpdateItemDto) {
+  async update(userId: number, id: string, updateItemDto: UpdateItemDto) {
     const item = await this.itemsRepository.findOne({
       where: {
         id,
@@ -60,7 +60,7 @@ export class ItemsService {
     return await this.itemsRepository.save(item);
   }
 
-  async remove(userId: number, id: number) {
+  async remove(userId: number, id: string) {
     const item = await this.itemsRepository.findOne({
       where: {
         id,
