@@ -30,6 +30,9 @@ export class MealTime {
   @Column({ type: 'time', nullable: true })
   dinner: string;
 
+  @Column({ type: 'int', default: 0 })
+  timezoneOffset?: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

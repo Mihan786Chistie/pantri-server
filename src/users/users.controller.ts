@@ -4,18 +4,16 @@ import {
   Post,
   Body,
   Patch,
-  Param,
-  Delete,
   UseGuards,
   Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { CreateMealTimeDto } from './dto/create-mealtime.dto';
 import { MealTimeService } from './mealtime.service';
 import { UpdateMealTimeDto } from './dto/update-mealtime.dto';
+import { UpdateTimeZoneDto } from './dto/update-timezone.dto';
 
 @Controller('users')
 export class UsersController {
@@ -60,5 +58,10 @@ export class UsersController {
       req.user.id,
       updateMealTimeDto,
     );
+  }
+
+  @Patch('timezone')
+  async timezone(@Req() req, @Body() updateTimezoneDto: UpdateTimeZoneDto) {
+    return await this.mealTimeService.timezone(req.user.id, updateTimezoneDto);
   }
 }

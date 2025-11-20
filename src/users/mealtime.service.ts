@@ -6,6 +6,7 @@ import { CreateMealTimeDto } from './dto/create-mealtime.dto';
 import { DEFAULT_MEALTIME } from './constants';
 import { User } from './entities/user.entity';
 import { UpdateMealTimeDto } from './dto/update-mealtime.dto';
+import { UpdateTimeZoneDto } from './dto/update-timezone.dto';
 
 @Injectable()
 export class MealTimeService {
@@ -40,5 +41,14 @@ export class MealTimeService {
     if (!mealTime) throw new NotFoundException(`MealTime not found`);
     Object.assign(mealTime, updateMealTimeDto);
     return await this.mealTimeRepository.save(mealTime);
+  }
+
+  async timezone(userId: number, updateTimezoneDto: UpdateTimeZoneDto) {
+    const mealTime = await this.getMealTime(userId);
+    if (!mealTime) {
+      throw new NotFoundException(`MealTime not found`);
+    }
+    mealTime.timezoneOffset = updateTimezoneDto.timezoneOffset;
+    return this.mealTimeRepository.save(mealTime);
   }
 }
