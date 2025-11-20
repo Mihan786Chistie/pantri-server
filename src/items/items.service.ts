@@ -12,7 +12,7 @@ export class ItemsService {
     private readonly itemsRepository: Repository<Item>,
   ) {}
 
-  async create(userId: number, createItemDto: CreateItemDto) {
+  async create(userId: string, createItemDto: CreateItemDto) {
     const item = new Item(createItemDto);
     return await this.itemsRepository.save({
       ...createItemDto,
@@ -22,7 +22,7 @@ export class ItemsService {
     });
   }
 
-  async findAll(userId: number) {
+  async findAll(userId: string) {
     const items = await this.itemsRepository.find({
       where: {
         user: {
@@ -33,7 +33,7 @@ export class ItemsService {
     return items;
   }
 
-  async findOne(userId: number, id: string) {
+  async findOne(userId: string, id: string) {
     const item = await this.itemsRepository.findOne({
       where: {
         id,
@@ -46,7 +46,7 @@ export class ItemsService {
     return item;
   }
 
-  async update(userId: number, id: string, updateItemDto: UpdateItemDto) {
+  async update(userId: string, id: string, updateItemDto: UpdateItemDto) {
     const item = await this.itemsRepository.findOne({
       where: {
         id,
@@ -60,7 +60,7 @@ export class ItemsService {
     return await this.itemsRepository.save(item);
   }
 
-  async remove(userId: number, id: string) {
+  async remove(userId: string, id: string) {
     const item = await this.itemsRepository.findOne({
       where: {
         id,

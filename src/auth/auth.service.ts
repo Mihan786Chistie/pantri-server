@@ -25,7 +25,7 @@ export class AuthService {
     return { id: user.id };
   }
 
-  async login(userId: number) {
+  async login(userId: string) {
     const { accessToken, refreshToken } = await this.generateToken(userId);
     const hashedRefreshToken = await argon2.hash(refreshToken);
     await this.userService.updateHashedRefreshToken(userId, hashedRefreshToken);
@@ -36,7 +36,7 @@ export class AuthService {
     };
   }
 
-  async refreshToken(userId: number) {
+  async refreshToken(userId: string) {
     const { accessToken, refreshToken } = await this.generateToken(userId);
     const hashedRefreshToken = await argon2.hash(refreshToken);
     await this.userService.updateHashedRefreshToken(userId, hashedRefreshToken);
@@ -48,7 +48,7 @@ export class AuthService {
     };
   }
 
-  async generateToken(userId: number) {
+  async generateToken(userId: string) {
     const payload: AuthJwtPayload = { sub: userId };
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload),
@@ -61,7 +61,7 @@ export class AuthService {
     };
   }
 
-  async validateRefreshToken(userId: number, refreshToken: string) {
+  async validateRefreshToken(userId: string, refreshToken: string) {
     const user = await this.userService.findOne(userId);
     if (!user || !user.hashedRefreshToken)
       throw new UnauthorizedException('Invalid Refresh Token');
@@ -78,7 +78,7 @@ export class AuthService {
     };
   }
 
-  async signout(userId: number) {
+  async signout(userId: string) {
     await this.userService.updateHashedRefreshToken(userId, null);
   }
 }
