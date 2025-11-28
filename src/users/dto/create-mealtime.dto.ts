@@ -1,19 +1,25 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsMilitaryTime, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateMealTimeDto {
-  @IsString()
+  @IsOptional()
+  @IsMilitaryTime()
   breakfast?: string;
 
-  @IsString()
+  @IsOptional()
+  @IsMilitaryTime()
   lunch?: string;
 
-  @IsString()
+  @IsOptional()
+  @IsMilitaryTime()
   snacks?: string;
 
-  @IsString()
+  @IsOptional()
+  @IsMilitaryTime()
   dinner?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   timezoneOffset?: number;
 }

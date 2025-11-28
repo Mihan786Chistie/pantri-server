@@ -1,15 +1,19 @@
-import { IsString } from 'class-validator';
+import { IsMilitaryTime, IsOptional } from 'class-validator';
 
 export class UpdateMealTimeDto {
-  @IsString()
+  @IsOptional()
+  @IsMilitaryTime()
   breakfast?: string;
 
-  @IsString()
+  @IsOptional()
+  @IsMilitaryTime()
   lunch?: string;
 
-  @IsString()
+  @IsOptional()
+  @IsMilitaryTime()
   snacks?: string;
 
-  @IsString()
+  @IsOptional()
+  @IsMilitaryTime()
   dinner?: string;
 }

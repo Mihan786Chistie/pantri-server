@@ -15,9 +15,9 @@ export class MealTimeService {
     private mealTimeRepository: Repository<MealTime>,
   ) {}
 
-  async createMealTime(user: User, createMealTimeDto: CreateMealTimeDto) {
+  async createMealTime(userId: string, createMealTimeDto: CreateMealTimeDto) {
     const mealTime = this.mealTimeRepository.create({
-      user,
+      user: { id: userId },
       ...createMealTimeDto,
       ...DEFAULT_MEALTIME,
     });
