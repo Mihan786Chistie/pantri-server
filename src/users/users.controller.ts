@@ -32,7 +32,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Req() req) {
-    return this.usersService.findOne(req.user.id);
+    return this.usersService.getPublicProfile(req.user.id);
   }
 
   @Post('mealTime')
