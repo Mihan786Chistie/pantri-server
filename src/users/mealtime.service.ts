@@ -3,10 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MealTime } from './entities/mealtime.entity';
 import { Repository } from 'typeorm';
 import { CreateMealTimeDto } from './dto/create-mealtime.dto';
-import { DEFAULT_MEALTIME } from './constants';
-import { User } from './entities/user.entity';
+import { getDefaultMealTimesUTC } from './constants';
 import { UpdateMealTimeDto } from './dto/update-mealtime.dto';
-import { UpdateTimeZoneDto } from './dto/update-timezone.dto';
 
 @Injectable()
 export class MealTimeService {
@@ -16,10 +14,17 @@ export class MealTimeService {
   ) {}
 
   async createMealTime(userId: string, createMealTimeDto: CreateMealTimeDto) {
+    if (!createMealTimeDto.timezoneOffset)
+      throw new NotFoundException('timezoneOffset not found');
+
+    const UTC_DEFAULT_MEALTIME = getDefaultMealTimesUTC(
+      createMealTimeDto.timezoneOffset,
+    );
+
     const mealTime = this.mealTimeRepository.create({
       user: { id: userId },
       ...createMealTimeDto,
-      ...DEFAULT_MEALTIME,
+      ...UTC_DEFAULT_MEALTIME,
     });
 
     return await this.mealTimeRepository.save(mealTime);
@@ -39,16 +44,20 @@ export class MealTimeService {
     const mealTime = await this.getMealTime(userId);
 
     if (!mealTime) throw new NotFoundException(`MealTime not found`);
-    Object.assign(mealTime, updateMealTimeDto);
-    return await this.mealTimeRepository.save(mealTime);
-  }
 
-  async timezone(userId: string, updateTimezoneDto: UpdateTimeZoneDto) {
-    const mealTime = await this.getMealTime(userId);
-    if (!mealTime) {
-      throw new NotFoundException(`MealTime not found`);
-    }
-    mealTime.timezoneOffset = updateTimezoneDto.timezoneOffset;
-    return this.mealTimeRepository.save(mealTime);
+    if (!updateMealTimeDto.timezoneOffset)
+      throw new NotFoundException('timezoneOffset Not Found');
+
+    const UTC_DEFAULT_MEALTIME = getDefaultMealTimesUTC(
+      updateMealTimeDto.timezoneOffset,
+    );
+
+    Object.assign(
+      mealTime,
+      UTC_DEFAULT_MEALTIME,
+      updateMealTimeDto.timezoneOffset,
+    );
+
+    return await this.mealTimeRepository.save(mealTime);
   }
 }
