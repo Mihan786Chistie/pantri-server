@@ -18,8 +18,7 @@ export class UpdateMealTimeDto {
   @IsMilitaryTime()
   dinner?: string;
 
-  @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  timezoneOffset?: number;
+  timezoneOffset: number;
 }

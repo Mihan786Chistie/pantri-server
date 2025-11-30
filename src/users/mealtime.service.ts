@@ -52,11 +52,7 @@ export class MealTimeService {
       updateMealTimeDto.timezoneOffset,
     );
 
-    Object.assign(
-      mealTime,
-      UTC_DEFAULT_MEALTIME,
-      updateMealTimeDto.timezoneOffset,
-    );
+    Object.assign(mealTime, updateMealTimeDto, UTC_DEFAULT_MEALTIME);
 
     return await this.mealTimeRepository.save(mealTime);
   }
