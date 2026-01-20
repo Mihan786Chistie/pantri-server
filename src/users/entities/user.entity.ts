@@ -11,6 +11,7 @@ import {
 import * as bcrypt from 'bcrypt';
 import { Item } from 'src/items/entities/item.entity';
 import { MealTime } from './mealtime.entity';
+import { Ai } from 'src/ai/entities/ai.entity';
 
 @Entity()
 export class User {
@@ -40,6 +41,9 @@ export class User {
 
   @OneToOne(() => MealTime, (mealTime) => mealTime.user)
   mealTime: MealTime;
+
+  @OneToMany(() => Ai, (ai) => ai.user)
+  aiNotifications: Ai[];
 
   @BeforeInsert()
   async hashedPassword() {
