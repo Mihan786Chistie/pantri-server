@@ -10,7 +10,7 @@ export class ItemsService {
   constructor(
     @InjectRepository(Item)
     private readonly itemsRepository: Repository<Item>,
-  ) {}
+  ) { }
 
   async create(userId: string, createItemDto: CreateItemDto) {
     const item = new Item(createItemDto);
