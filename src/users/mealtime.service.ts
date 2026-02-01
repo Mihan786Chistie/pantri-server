@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MealTime } from './entities/mealtime.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateMealTimeDto } from './dto/create-mealtime.dto';
 import { getDefaultMealTimesUTC } from './constants';
 import { UpdateMealTimeDto } from './dto/update-mealtime.dto';
@@ -11,7 +11,7 @@ export class MealTimeService {
   constructor(
     @InjectRepository(MealTime)
     private mealTimeRepository: Repository<MealTime>,
-  ) {}
+  ) { }
 
   async createMealTime(userId: string, createMealTimeDto: CreateMealTimeDto) {
     if (!createMealTimeDto.timezoneOffset)
@@ -56,4 +56,14 @@ export class MealTimeService {
 
     return await this.mealTimeRepository.save(mealTime);
   }
+
+  async checkMealTimes(offsetOne: number, offsetTwo: number) {
+    const mealTimes = await this.mealTimeRepository.find({
+      where: {
+        timezoneOffset: In([offsetOne, offsetTwo]),
+      },
+    });
+    return mealTimes;
+  }
+
 }

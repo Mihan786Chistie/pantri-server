@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsMilitaryTime, IsNumber, IsOptional } from 'class-validator';
+import { IsMilitaryTime, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateMealTimeDto {
   @IsOptional()
@@ -21,4 +21,8 @@ export class UpdateMealTimeDto {
   @Type(() => Number)
   @IsNumber()
   timezoneOffset: number;
+
+  @IsOptional()
+  @IsString()
+  timezone?: string;
 }
