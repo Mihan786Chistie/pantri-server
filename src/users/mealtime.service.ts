@@ -57,13 +57,20 @@ export class MealTimeService {
     return await this.mealTimeRepository.save(mealTime);
   }
 
-  async checkMealTimes(offsetOne: number, offsetTwo: number) {
-    const mealTimes = await this.mealTimeRepository.find({
-      where: {
-        timezoneOffset: In([offsetOne, offsetTwo]),
-      },
-    });
+  async getDistinctTimezone() {
+    const mealTimes = await this.mealTimeRepository.createQueryBuilder('mealTime')
+      .select('mealTime.timezone', 'timezone')
+      .distinct(true)
+      .getRawMany();
     return mealTimes;
   }
 
+  async getMealTimeByTimezones(timezones: string[]) {
+    return await this.mealTimeRepository.find({
+      where: {
+        timezone: In(timezones),
+      },
+      relations: ['user'],
+    });
+  }
 }

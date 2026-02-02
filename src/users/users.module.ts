@@ -15,4 +15,4 @@ import { MealTime } from './entities/mealtime.entity';
   controllers: [UsersController],
   providers: [UsersService, MealTimeService],
 })
-export class UsersModule {}
+export class UsersModule { }
