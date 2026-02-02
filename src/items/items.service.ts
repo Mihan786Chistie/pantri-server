@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { Item } from './entities/item.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -13,7 +13,6 @@ export class ItemsService {
   ) { }
 
   async create(userId: string, createItemDto: CreateItemDto) {
-    const item = new Item(createItemDto);
     return await this.itemsRepository.save({
       ...createItemDto,
       user: {
@@ -75,5 +74,20 @@ export class ItemsService {
     if (result.affected === 0)
       throw new NotFoundException(`Item ${item.id} not found`);
     return { deleted: true };
+  }
+
+  async cleanupExpiredItems(userId: string) {
+    const items = await this.itemsRepository.find({
+      where: {
+        user: {
+          id: userId,
+        },
+        expiryDate: LessThan(new Date()),
+      },
+    });
+
+    for (const item of items) {
+      await this.itemsRepository.delete(item.id);
+    }
   }
 }
