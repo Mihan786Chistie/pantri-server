@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
-import { AiService } from 'src/ai/ai.service';
-import { ItemsService } from 'src/items/items.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 import { MealTimeService } from 'src/users/mealtime.service';
 
 @Injectable()
@@ -10,8 +10,8 @@ export class CronService {
 
     constructor(
         private readonly mealTimeService: MealTimeService,
-        private readonly itemsService: ItemsService,
-        private readonly aiService: AiService,
+        @InjectQueue('ai-notifications') private aiQueue: Queue,
+        @InjectQueue('expired-items-cleanup') private itemsQueue: Queue,
     ) { }
 
     private timeFormatter(timezone: string) {
@@ -27,7 +27,7 @@ export class CronService {
         return `*****${id.slice(-4)}`;
     }
 
-    @Cron('0 * * * *')
+    @Cron(CronExpression.EVERY_HOUR)
     async handleCron() {
         try {
             const mealTimes = await this.mealTimeService.getDistinctTimezone();
@@ -54,8 +54,8 @@ export class CronService {
                 for (const mealTime of mealTimes) {
                     try {
                         this.logger.debug(`Processing user ${this.maskId(mealTime.user.id)}`);
-                        await this.itemsService.cleanupExpiredItems(mealTime.user.id);
-                        await this.aiService.generateAiNotifications(mealTime.user.id);
+                        await this.itemsQueue.add('cleanup-expired-items', { userId: mealTime.user.id });
+                        await this.aiQueue.add('generate-notifications', { userId: mealTime.user.id });
                     } catch (error) {
                         this.logger.error(`Failed to process cron tasks for user ${this.maskId(mealTime.user.id)}`, error.stack);
                     }
