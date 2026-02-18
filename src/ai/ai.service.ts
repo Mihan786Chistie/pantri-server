@@ -66,7 +66,11 @@ export class AiService {
             ${items.map((item) => `Id: ${item.id}, Name: ${item.name}, Category: ${item.category}, Expiry Date: ${item.expiryDate}, Consumed: ${item.consumed}`).join('\n')}
             `;
 
+            const start = Date.now();
+            this.logger.debug(`Sending request to Cerebras for user ${userId}`);
             const response = await this.cerebrasClient.generateAiNotifications(input);
+            const duration = Date.now() - start;
+            this.logger.debug(`Received response from Cerebras for user ${userId} in ${duration}ms`);
 
             let result;
             try {

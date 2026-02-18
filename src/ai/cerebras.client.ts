@@ -10,6 +10,8 @@ export class CerebrasClient {
         }
         this.client = new Cerebras({
             apiKey: process.env.CEREBRAS_API_KEY,
+            maxRetries: 5,
+            timeout: 30000,
         });
     }
 
