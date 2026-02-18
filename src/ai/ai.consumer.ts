@@ -1,10 +1,12 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { BullQueueProcessor, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
 import { AiService } from './ai.service';
 
 @Processor('ai-notifications', {
-    lockDuration: 60000,
+    lockDuration: 300000,
+    maxStalledCount: 1,
+    stalledInterval: 30000,
 })
 export class AiConsumer extends WorkerHost {
     private readonly logger = new Logger(AiConsumer.name);
