@@ -55,7 +55,12 @@ export class CronService {
                     try {
                         this.logger.debug(`Processing user ${this.maskId(mealTime.user.id)}`);
                         await this.itemsQueue.add('cleanup-expired-items', { userId: mealTime.user.id });
-                        await this.aiQueue.add('generate-notifications', { userId: mealTime.user.id });
+                        await this.aiQueue.add('generate-notifications', { userId: mealTime.user.id }, {
+                            attempts: 3,
+                            backoff: { type: 'exponential', delay: 2000 },
+                            removeOnComplete: { count: 100 },
+                            removeOnFail: { count: 50 },
+                        });
                     } catch (error) {
                         this.logger.error(`Failed to process cron tasks for user ${this.maskId(mealTime.user.id)}`, error.stack);
                     }
