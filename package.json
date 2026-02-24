@@ -54,6 +54,11 @@
     "typeorm": "^0.3.27",
     "xss": "^1.0.15"
   },
+  "overrides": {
+    "minimatch": ">=10.2.1",
+    "glob": ">=10.5.1",
+    "ajv": ">=8.18.0"
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",

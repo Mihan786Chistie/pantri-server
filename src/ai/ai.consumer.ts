@@ -7,6 +7,10 @@ import { AiService } from './ai.service';
     lockDuration: 300000,
     maxStalledCount: 1,
     stalledInterval: 30000,
+    removeOnComplete: {
+        age: 60 * 60,
+        count: 100
+    }
 })
 export class AiConsumer extends WorkerHost {
     private readonly logger = new Logger(AiConsumer.name);

@@ -6,6 +6,10 @@ import { Job } from "bullmq";
 
 @Processor('expired-items-cleanup', {
     lockDuration: 60000,
+    removeOnComplete: {
+        age: 60 * 60,
+        count: 100
+    }
 })
 export class ItemsConsumer extends WorkerHost {
     private readonly logger = new Logger(ItemsConsumer.name);
