@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
@@ -13,6 +14,7 @@ export class CreateUserDto {
   name: string;
 
   @IsEmail()
+  @Transform(({ value }) => value.toLowerCase())
   email: string;
 
   @IsUrl()

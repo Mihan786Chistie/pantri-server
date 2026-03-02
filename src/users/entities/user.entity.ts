@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
+import { Exclude } from 'class-transformer';
 import { Item } from 'src/items/entities/item.entity';
 import { MealTime } from './mealtime.entity';
 import { Ai } from 'src/ai/entities/ai.entity';
@@ -24,9 +25,11 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @Exclude()
   @Column()
   password: string;
 
+  @Exclude()
   @Column({ nullable: true })
   hashedRefreshToken: string;
 
