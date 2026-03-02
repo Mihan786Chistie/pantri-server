@@ -20,7 +20,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly mealTimeService: MealTimeService,
-  ) {}
+  ) { }
 
   @Public()
   @Post()

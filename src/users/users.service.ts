@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-  ) {}
+  ) { }
   async create(createUserDto: CreateUserDto) {
     const existing = await this.findByEmail(createUserDto.email);
     if (existing) throw new BadRequestException('Email already exists');
@@ -20,7 +20,7 @@ export class UsersService {
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.userRepository.findOne({
       where: {
-        email,
+        email: email.toLowerCase(),
       },
     });
 
