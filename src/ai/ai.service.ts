@@ -52,18 +52,27 @@ export class AiService {
                 ? existingAi.notifications.map(n => n.notification).join('\n')
                 : "None";
 
+            const sanitizedHistory = historyStr.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const sanitizedUserName = user?.name?.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
             const input = `
+            <user_data>
             Today's Date: ${todayStr}
-            User: ${user?.id}, Name: ${user?.name}
+            User: ${user?.id}, Name: ${sanitizedUserName}
 
             URGENT - MUST USE (Expiring Soon): 
             ${urgentItemsStr || "None"}
 
             Recent Meal History (For Variety - Avoid repeating unless item is URGENT):
-            ${historyStr}
+            ${sanitizedHistory}
 
             Items available:
-            ${items.map((item) => `Id: ${item.id}, Name: ${item.name}, Category: ${item.category}, Expiry Date: ${item.expiryDate}, Consumed: ${item.consumed}`).join('\n')}
+            ${items.map((item) => {
+                const sanitizedName = item.name.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                const sanitizedCategory = item.category?.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return `Id: ${item.id}, Name: ${sanitizedName}, Category: ${sanitizedCategory}, Expiry Date: ${item.expiryDate}, Consumed: ${item.consumed}`;
+            }).join('\n')}
+            </user_data>
             `;
 
             const start = Date.now();
