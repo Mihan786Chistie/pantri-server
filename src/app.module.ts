@@ -12,6 +12,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import { BullModule } from '@nestjs/bullmq';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -39,6 +41,25 @@ import { BullModule } from '@nestjs/bullmq';
     }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => [{
+        name: 'short',
+        ttl: Number(configService.getOrThrow('SHORT_TTL')),
+        limit: Number(configService.getOrThrow('SHORT_LIMIT')),
+      },
+      {
+        name: 'medium',
+        ttl: Number(configService.getOrThrow('MEDIUM_TTL')),
+        limit: Number(configService.getOrThrow('MEDIUM_LIMIT')),
+      },
+      {
+        name: 'long',
+        ttl: Number(configService.getOrThrow('LONG_TTL')),
+        limit: Number(configService.getOrThrow('LONG_LIMIT')),
+      }]
+    }),
     DatabaseModule,
     ItemsModule,
     UsersModule,
@@ -47,6 +68,11 @@ import { BullModule } from '@nestjs/bullmq';
     CronModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+    }
+  ],
 })
 export class AppModule { }
