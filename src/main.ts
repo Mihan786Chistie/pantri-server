@@ -15,9 +15,9 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.use(compression());
-
   app.use(helmet());
+
+  app.use(compression());
 
   app.useGlobalPipes(
     new SanitizePipe(),
