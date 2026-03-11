@@ -70,9 +70,7 @@ export class ItemsService {
     });
     if (!item) throw new NotFoundException(`Item ${id} not found`);
 
-    const result = await this.itemsRepository.delete(item.id);
-    if (result.affected === 0)
-      throw new NotFoundException(`Item ${item.id} not found`);
+    await this.itemsRepository.softRemove(item);
     return { deleted: true };
   }
 
@@ -87,7 +85,7 @@ export class ItemsService {
     });
 
     for (const item of items) {
-      await this.itemsRepository.delete(item.id);
+      await this.itemsRepository.softRemove(item);
     }
   }
 }

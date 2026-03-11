@@ -6,6 +6,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import * as bcrypt from 'bcrypt';
@@ -38,6 +39,9 @@ export class User {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @OneToMany(() => Item, (item) => item.user)
   items: Item[];
