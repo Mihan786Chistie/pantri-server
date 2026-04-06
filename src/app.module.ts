@@ -7,6 +7,7 @@ import { ItemsModule } from './items/items.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { AiModule } from './ai/ai.module';
+import { SyncModule } from './sync/sync.module';
 import { CronModule } from './cron/cron.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -65,6 +66,7 @@ import { APP_GUARD } from '@nestjs/core';
     UsersModule,
     AuthModule,
     AiModule,
+    SyncModule,
     CronModule,
   ],
   controllers: [AppController],

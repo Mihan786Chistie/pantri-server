@@ -13,6 +13,9 @@ export class Ai {
     @JoinColumn({ name: 'userId' })
     user: User;
 
+    @Column()
+    userId: string;
+
     @Column({ type: 'jsonb', nullable: true })
     notifications: Notification[];
 

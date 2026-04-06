@@ -31,6 +31,9 @@ export class Item {
   @JoinColumn({ name: 'userId' })
   user: User;
 
+  @Column()
+  userId: string;
+
   constructor(item?: Partial<Item>) {
     Object.assign(this, item);
   }
