@@ -11,12 +11,15 @@ import { User } from './user.entity';
 
 @Entity()
 export class MealTime {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @OneToOne(() => User, (user) => user.mealTime)
-  @JoinColumn()
+  @JoinColumn({ name: 'userId' })
   user: User;
+
+  @Column()
+  userId: string;
 
   @Column({ type: 'time', nullable: true })
   breakfast: string;
