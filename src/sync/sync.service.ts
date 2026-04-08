@@ -77,24 +77,24 @@ export class SyncService {
         ]);
 
         this.logger.debug(
-            `Pull sync for user ${userId} | items created=${createdItems.length}`,
+            `Pull sync for user ${userId}`,
         );
 
         return {
             changes: {
                 items: {
                     created: [],
-                    updated: [...createdItems, ...updatedItems].map(this.mapItem),
+                    updated: [...createdItems, ...updatedItems].map(item => this.mapItem(item)),
                     deleted: deletedItems.map(i => i.id),
                 },
                 meal_times: {
                     created: [],
-                    updated: [...createdMeals, ...updatedMeals].map(this.mapMealTime),
+                    updated: [...createdMeals, ...updatedMeals].map(meal => this.mapMealTime(meal)),
                     deleted: [],
                 },
                 ai_notifications: {
                     created: [],
-                    updated: [...createdAis, ...updatedAis].map(this.mapAi),
+                    updated: [...createdAis, ...updatedAis].map(ai => this.mapAi(ai)),
                     deleted: [],
                 },
             },

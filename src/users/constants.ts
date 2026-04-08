@@ -11,11 +11,12 @@ export const getMealTimeUTC = (
 ): string => {
   const [h, m] = time.split(':').map(Number);
 
-  const local = new Date();
-  local.setUTCHours(h - timezoneOffset / 60, m);
+  const totalMinutes = h * 60 + m + timezoneOffset;
 
-  const hours = String(local.getUTCHours()).padStart(2, '0');
-  const minutes = String(local.getUTCMinutes()).padStart(2, '0');
+  const utcMinutes = ((totalMinutes % 1440) + 1440) % 1440;
+
+  const hours = String(Math.floor(utcMinutes / 60)).padStart(2, '0');
+  const minutes = String(utcMinutes % 60).padStart(2, '0');
 
   return `${hours}:${minutes}`;
 };
