@@ -31,13 +31,17 @@ export class MealTimeService {
   }
 
   async getMealTime(userId: string) {
-    return await this.mealTimeRepository.findOne({
+    const mealTime = await this.mealTimeRepository.findOne({
       where: {
         user: {
           id: userId,
         },
       },
     });
+
+    if (!mealTime) throw new NotFoundException(`MealTime not found`);
+
+    return mealTime;
   }
 
   async updateMealTime(userId: string, updateMealTimeDto: UpdateMealTimeDto) {
