@@ -173,6 +173,67 @@ export class SyncService {
                 }
             }
 
+            if (changes?.meal_times) {
+                for (const raw of changes.meal_times.created ?? []) {
+                    if (!this.isUUID(raw.id)) continue;
+
+                    const existing = await queryRunner.manager.findOne(MealTime, {
+                        where: { id: raw.id, userId },
+                    });
+
+                    if (!existing) {
+                        const mealTime = queryRunner.manager.create(MealTime, {
+                            id: raw.id,
+                            breakfast: raw.breakfast,
+                            lunch: raw.lunch,
+                            snacks: raw.snacks,
+                            dinner: raw.dinner,
+                            timezoneOffset: raw.timezone_offset,
+                            timezone: raw.timezone,
+                            userId,
+                        });
+
+                        await queryRunner.manager.insert(MealTime, mealTime);
+                    }
+                }
+
+                for (const raw of changes.meal_times.updated ?? []) {
+                    if (!this.isUUID(raw.id)) continue;
+
+                    const existing = await queryRunner.manager.findOne(MealTime, {
+                        where: { id: raw.id, userId },
+                    });
+
+                    if (existing) {
+                        this.ensureNoConflict(existing.updatedAt, lastPulledAt, `mealTime ${raw.id}`);
+                        await queryRunner.manager.update(
+                            MealTime,
+                            { id: raw.id, userId },
+                            {
+                                breakfast: raw.breakfast,
+                                lunch: raw.lunch,
+                                snacks: raw.snacks,
+                                dinner: raw.dinner,
+                                timezoneOffset: raw.timezone_offset,
+                                timezone: raw.timezone,
+                            },
+                        );
+                    } else {
+                        const mealTime = queryRunner.manager.create(MealTime, {
+                            id: raw.id,
+                            breakfast: raw.breakfast,
+                            lunch: raw.lunch,
+                            snacks: raw.snacks,
+                            dinner: raw.dinner,
+                            timezoneOffset: raw.timezone_offset,
+                            timezone: raw.timezone,
+                            userId,
+                        });
+                        await queryRunner.manager.insert(MealTime, mealTime);
+                    }
+                }
+            }
+
             await queryRunner.commitTransaction();
 
         } catch (e) {
